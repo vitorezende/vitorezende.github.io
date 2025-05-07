@@ -96,7 +96,7 @@
         const initialX = naoButton.offsetLeft;
         const initialY = naoButton.offsetTop;
         
-        naoButton.addEventListener('mouseover', () => {
+        function moveButton() {
             // Define movement range (in pixels)
             const range = 150;
             
@@ -125,7 +125,7 @@
             
             naoButton.style.left = randomX + 'px';
             naoButton.style.top = randomY + 'px';
-        });
+        }
 
         function isOverlapping(x, y, width, height, element) {
             const rect = element.getBoundingClientRect();
@@ -136,6 +136,12 @@
                 y > rect.bottom
             );
         }
+
+        // Add multiple event listeners for better mobile support
+        naoButton.addEventListener('mouseover', moveButton);
+        naoButton.addEventListener('click', moveButton);
+        naoButton.addEventListener('touchstart', moveButton);
+        naoButton.addEventListener('touchmove', moveButton);
     </script>
 </body>
 </html>
