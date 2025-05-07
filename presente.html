@@ -92,22 +92,36 @@
         const simButton = document.getElementById('simButton');
         const buttonContainer = document.querySelector('.button-container');
         
+        // Store initial position
+        const initialX = naoButton.offsetLeft;
+        const initialY = naoButton.offsetTop;
+        
         naoButton.addEventListener('mouseover', () => {
-            const maxX = window.innerWidth - naoButton.offsetWidth - 40;
-            const maxY = window.innerHeight - naoButton.offsetHeight - 40;
+            // Define movement range (in pixels)
+            const range = 150;
+            
+            // Calculate new position within range
+            const maxX = initialX + range;
+            const minX = initialX - range;
+            const maxY = initialY + range;
+            const minY = initialY - range;
             
             let randomX, randomY;
             let attempts = 0;
             const maxAttempts = 10;
             
             do {
-                randomX = Math.floor(Math.random() * maxX);
-                randomY = Math.floor(Math.random() * maxY);
+                randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
                 attempts++;
             } while (
                 attempts < maxAttempts && 
                 isOverlapping(randomX, randomY, naoButton.offsetWidth, naoButton.offsetHeight, simButton)
             );
+            
+            // Ensure the button stays within the viewport
+            randomX = Math.max(20, Math.min(randomX, window.innerWidth - naoButton.offsetWidth - 20));
+            randomY = Math.max(20, Math.min(randomY, window.innerHeight - naoButton.offsetHeight - 20));
             
             naoButton.style.left = randomX + 'px';
             naoButton.style.top = randomY + 'px';
