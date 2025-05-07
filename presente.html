@@ -14,6 +14,8 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .message {
@@ -27,6 +29,10 @@
         .button-container {
             display: flex;
             gap: 20px;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
         }
 
         button {
@@ -36,17 +42,37 @@
             border: none;
             border-radius: 5px;
             transition: all 0.3s ease;
+            min-width: 100px;
         }
 
         #simButton {
             background-color: #4CAF50;
             color: white;
+            position: relative;
+            z-index: 1;
         }
 
         #naoButton {
             background-color: #f44336;
             color: white;
             position: absolute;
+            left: 50%;
+            transform: translateX(50px);
+        }
+
+        @media (max-width: 600px) {
+            .message {
+                font-size: 1.5em;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+
+            #naoButton {
+                transform: translateX(40px);
+            }
         }
 
         #simButton:hover {
@@ -63,17 +89,39 @@
 
     <script>
         const naoButton = document.getElementById('naoButton');
+        const simButton = document.getElementById('simButton');
+        const buttonContainer = document.querySelector('.button-container');
         
         naoButton.addEventListener('mouseover', () => {
-            const maxX = window.innerWidth - naoButton.offsetWidth;
-            const maxY = window.innerHeight - naoButton.offsetHeight;
+            const maxX = window.innerWidth - naoButton.offsetWidth - 40;
+            const maxY = window.innerHeight - naoButton.offsetHeight - 40;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            let randomX, randomY;
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            do {
+                randomX = Math.floor(Math.random() * maxX);
+                randomY = Math.floor(Math.random() * maxY);
+                attempts++;
+            } while (
+                attempts < maxAttempts && 
+                isOverlapping(randomX, randomY, naoButton.offsetWidth, naoButton.offsetHeight, simButton)
+            );
             
             naoButton.style.left = randomX + 'px';
             naoButton.style.top = randomY + 'px';
         });
+
+        function isOverlapping(x, y, width, height, element) {
+            const rect = element.getBoundingClientRect();
+            return !(
+                x + width < rect.left ||
+                x > rect.right ||
+                y + height < rect.top ||
+                y > rect.bottom
+            );
+        }
     </script>
 </body>
 </html>
